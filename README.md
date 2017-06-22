@@ -35,7 +35,7 @@ sudo apt-get install python-psycopg2
 
 ```
 
-###Create Global Grid Tables
+### Create Global Grid Tables
 
 Navigate to the data folder inside the TopoCluster main directory. Extract the tar files
 ```
