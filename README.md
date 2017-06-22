@@ -93,7 +93,7 @@ python TopoCluster.py
 -tf data/wikipedia_sample.txt 
 -traintype wiki 
 -dtbl wikipedia_sample_geography 
--conn "dbname=mydbname user=myusername host='localhost' password='pass'" 
+-conn "dbname=testdb user=postgres host='localhost' password='pass'" 
 ```
 
 Load Grid Table (if not already done)
@@ -103,7 +103,7 @@ python TopoCluster.py -mode loadDB \
 -tf data/globalgrid_5_clip.txt \
 -traintype wiki \
 -dtbl globalgrid_5_clip_geog \
--conn "dbname=mydbname user=myusername host='localhost' password=' '" 
+-conn "dbname=testdb user=postgres host='localhost' password=' '" 
 ```
 
 Argument Explanation:
