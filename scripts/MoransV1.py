@@ -6,6 +6,7 @@ import datetime
 import io
 import math
 import numpy
+import re
 
 from collections import Counter
 
@@ -290,9 +291,12 @@ def MoransCalc4_appears(gid_dict, gtbl, means_dict, kern_dist, conn_info, cores)
 
     print "Number of processes spawning: ", len(id_lists)
 
-    print len(id_lists[0])
-    print len(id_lists[1])
-    print len(id_lists[2])
+    for id_list in id_lists:
+        print len(id_list)
+
+    # print len(id_lists[0])
+    # print len(id_lists[1])
+    # print len(id_lists[2])
 
     map_args = [[gid_dict, x, gtbl, mean_vector, denomsum, numerator_sum, total_denom_weights, N, kern_dist, ref_dict, conn_info] for x in id_lists]
 
@@ -941,6 +945,8 @@ def calc(f, dtbl, gtbl, conn_info, outf, agg_dist, kern_dist, traintype, writeAg
     conn = psycopg2.connect(conn_info)
     print "DB Connection Success"
 
+    delim_regex = re.compile(':\d+$')
+
     #Read in the trainfile data/calc word frequencies
     with io.open(f, 'r', encoding='utf-8') as f:
         for person in f:
@@ -969,7 +975,7 @@ def calc(f, dtbl, gtbl, conn_info, outf, agg_dist, kern_dist, traintype, writeAg
                     latit = row[2].split(',')[0]
                     longit = row[2].split(',')[1]
                     if UseAggLMs == False:
-                        F_Freq = dict([f.split(':')[0],int(f.split(':')[1])] for f in row[9].split(" "))
+                        F_Freq = dict([delim_regex.split(f)[0],int(delim_regex.search(f).group()[1:])] for f in row[8].split(" "))
                         F_All |= set(F_Freq.keys())
                         newDoc = Document(userID, latit, longit, F_Freq, filename, UseAggLMs)
                         docDict[userID] = newDoc

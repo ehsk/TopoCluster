@@ -6,6 +6,7 @@ import datetime
 import io
 import math
 import numpy
+import re
 #import SuperDocument as sp
 from collections import Counter
 
@@ -264,6 +265,8 @@ def calc(f, statistic, dtbl, gtbl, conn_info, outf, out_tbl, kern_dist, kerntype
             
         print "Num Words in whitelist: ", len(whitelist)
 
+    delim_regex = re.compile(':\d+$')
+
     #Read in the trainfile data/calc word frequencies
     with io.open(f, 'r', encoding='utf-8') as f:
         for person in f:
@@ -300,7 +303,8 @@ def calc(f, statistic, dtbl, gtbl, conn_info, outf, out_tbl, kern_dist, kerntype
                 longit = row[2].split(',')[1]
                 #print userID
                 if UseAggLMs == False:
-                    F_Freq = dict([f.split(':')[0],int(f.split(':')[1])] for f in row[-1].split(" "))
+                    # F_Freq = dict([f.split(':')[0],int(f.split(':')[1])] for f in row[-1].split(" "))
+                    F_Freq = dict([delim_regex.split(f)[0], int(delim_regex.search(f).group()[1:])] for f in row[-1].split(" "))
                     #F_All |= set(F_Freq.keys())
                     newDoc = Document(userID, latit, longit, F_Freq, filename, listuse, whitelist)
                     if listuse == 'any':
