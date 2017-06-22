@@ -28,6 +28,6 @@ def Uniform(ptbl, pid, dist, cur, pointgrid="None"):
     elif pointgrid=="Only":
         cur.execute("SELECT p2.gid, 1.0 FROM %s as p1, %s as p2 WHERE p1.gid = %s and ST_DWithin(p1.geog, p2.geog, %s); " % (ptbl, ptbl, '%s', dist), (pid, ) )
     else:
-        cur.execute("SELECT p2.uid, 1.0 FROM %s as p1, %s as p2 WHERE p1.gid = %s and ST_DWithin(p1.geog, p2.geog, %s); " % (pointgrid, ptbl, '%s', dist), (pid, ) )
+        cur.execute("SELECT p2.gid, 1.0 FROM %s as p1, %s as p2 WHERE p1.gid = %s and ST_DWithin(p1.geog, p2.geog, %s); " % (pointgrid, ptbl, '%s', dist), (pid, ) )
     return cur.fetchall()
 
