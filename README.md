@@ -119,12 +119,12 @@ Use of this mode requires installation of Python's Numpy/Scipy packages.
 (Remove returns between arguments)
 ```
 python TopoCluster.py 
--mode morans_calc 
+-mode calc_morans 
 -tf /directory/wikipedia_training.data.txt 
 -traintype wiki 
 -dtbl wikipedia_geography
--gtbl globalgrid_5_clip
--conn "dbname=mydbname user=myusername host='localhost' password=' '"
+-gtbl globalgrid_5_clip_geog
+-conn "dbname=testdb user=postgres host='localhost' password=' '"
 -agg_dist 40000
 -kern_dist 90000
 -kern_type uniform
@@ -155,12 +155,12 @@ Use of this mode requires Numpy to be installed. This mode takes in a document t
 (Remove returns between arguments)
 ```
 python TopoCluster.py 
--mode morans_calc 
+-mode local_stats 
 -tf /directory/wikipedia_training.data.txt 
 -traintype wiki 
 -dtbl wikipedia_geography
--gtbl globalgrid_5_clip
--conn "dbname=mydbname user=myusername host='localhost' password=' '"
+-gtbl globalgrid_5_clip_geog
+-conn "dbname=testdb user=postgres host='localhost' password=' '"
 -kern_dist 100000
 -kern_type epanech
 -include_zero False
@@ -188,7 +188,7 @@ This mode will Stanford NER parse all plain text files in a directory and perfor
 
 Example command:
 ```
-python TopoCluster.py -mode plain_topo_resolve -outdomain_stat_tbl enwiki20130102_train_kernel100k_grid5_epanech_allwords_ner_fina -tstf /home/yourUser/plaintextfiles -conn "dbname=mydbname user=myusername host='localhost' password=' '" -gtbl globalgrid_5_clip_geog -percentile 1.0 -window 15 -main_topo_weight 40.0 -other_topo_weight 5.0 -other_word_weight 1.0 -country_tbl countries_2012 -region_tbl regions_2012 -state_tbl states_2012 -geonames_tbl geonames_all -out_domain_lambda 1.0 -stan_path /home/yourUser/etc/TopoCluster/stanford-ner-path-containing-jar -results_file /home/yourUser/plaintextfiles_results.txt
+python TopoCluster.py -mode plain_topo_resolve -outdomain_stat_tbl enwiki20130102_train_kernel100k_grid5_epanech_allwords_ner_fina -tstf /home/yourUser/plaintextfiles -conn "dbname=testdb user=postgres host='localhost' password=' '" -gtbl globalgrid_5_clip_geog -percentile 1.0 -window 15 -main_topo_weight 40.0 -other_topo_weight 5.0 -other_word_weight 1.0 -country_tbl countries_2012 -region_tbl regions_2012 -state_tbl states_2012 -geonames_tbl geonames_all -out_domain_lambda 1.0 -stan_path /home/yourUser/etc/TopoCluster/stanford-ner-path-containing-jar -results_file /home/yourUser/plaintextfiles_results.txt
 ```
 
 ### Test Resolver (Tr-CoNLL xml format, gold NER)
