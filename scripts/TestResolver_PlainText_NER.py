@@ -30,7 +30,7 @@ def parse_xml(afile):
 	toporef = {}
 	i = 0
 	sid = 0
-	
+
 	#print root.tag
 	#print root.attrib
 	for child in root.iter('s'):
@@ -77,7 +77,7 @@ def getContext(wordref, i, window, stopwords, toporef):
 					#sys.exit()
 				else:
 					contextlist.append([wordref[j], "Word", (i-j)])
-			except: 
+			except:
 				#print "~~~~Broken String~~~~"
 				#print wordref[j]
 				pass
@@ -104,7 +104,7 @@ def getContext(wordref, i, window, stopwords, toporef):
 				else:
 					contextlist.append([wordref[j], "Word", (i-j)])
 			except:
-				pass 
+				pass
 				#print "~~~~Broken String~~~~"
 				#print wordref[j]
 			#	print "~~~~~~~~~~~~~~~~~~~~~"
@@ -155,7 +155,7 @@ def calc(in_domain_stat_tbl, out_domain_stat_tbl, test_xml, conn_info, gtbl, win
 			SQL_check = "select * FROM %s LIMIT 1;" % (tb)
 			cur.execute(SQL_check)
 			result = cur.fetchall()
-			if len(result) > 0:	
+			if len(result) > 0:
 				print tb, "table loaded correctly"
 	except:
 		print "Out of domain tables were not loaded correctly"
@@ -271,9 +271,9 @@ def calc(in_domain_stat_tbl, out_domain_stat_tbl, test_xml, conn_info, gtbl, win
 			print plaintext
 			filename = os.path.join(test_xml, plaintext)
 			outxml = "ner_" + plaintext
-			#Catch errors from the Stanford NER. Doesn't always succeed in parsing files. 
+			#Catch errors from the Stanford NER. Doesn't always succeed in parsing files.
 			try:
-				#NER.calc(stan_path, filename, outxml) 
+				#NER.calc(stan_path, filename, outxml)
 				NER.calc2(stan_path, filename, outxml)
 				toporef, wordref = NER.readnerxml(outxml)
 				os.remove(outxml)
@@ -290,7 +290,7 @@ def calc(in_domain_stat_tbl, out_domain_stat_tbl, test_xml, conn_info, gtbl, win
 			#wordref = other words dictionary with key = token index : value = word (at this point)
 			#toporef = toponym dictionary with key = token index : value = word (at this point)
 			#total_topo = total number of toponyms currently georeferenced
-			predictions, total_topo = VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup,  
+			predictions, total_topo = VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup,
 				percentile, window, stopwords, main_topo_weight, other_topo_weight, other_word_weight, plaintext, predictions, country_tbl, region_tbl, state_tbl,
 				 geonames_tbl, cntry_alt, region_alt, state_alt, pplc_alt, in_domain_stat_tbl, in_corp_lamb, out_corp_lamb)
 			with io.open(results_file+plaintext, 'w', encoding='utf-8') as w:
@@ -357,7 +357,7 @@ def getCorrectTable(word, tab1, tab2, tab3):
 	if len(word) > 0:
 		if word[0].lower() in tab1:
 			table = 'enwiki20130102_ner_final_atoi'
-		elif word[0].lower() in tab2: 
+		elif word[0].lower() in tab2:
 			table = 'enwiki20130102_ner_final_jtos'
 		elif word[0].lower() in tab3:
 			table = 'enwiki20130102_ner_final_ttoz'
@@ -366,9 +366,9 @@ def getCorrectTable(word, tab1, tab2, tab3):
 	return table
 
 #Performs actual disambiguation work based on summing Gi* vectors of words in a context window
-def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, window, stopwords, main_topo_weight, other_topo_weight, 
+def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, window, stopwords, main_topo_weight, other_topo_weight,
 	other_word_weight, plaintext_file, predictions, country_tbl, region_tbl, state_tbl,
-	geonames_tbl, country_alt, region_alt, state_alt, pplc_alt, in_domain_stat_tbl, in_corp_lamb, out_corp_lamb): 
+	geonames_tbl, country_alt, region_alt, state_alt, pplc_alt, in_domain_stat_tbl, in_corp_lamb, out_corp_lamb):
 
 	#Lists of alphabetic characters that help system decide which table partition to query in later steps
 	tab1 = [chr(item) for item in range(ord('a'), ord('i')+1)]
@@ -384,7 +384,7 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 		topotokens = []
 		#Get all words in a context window around the toponym's index
 		contextlist = getContext(wordref, j, window, stopwords, toporef)
-		
+
 		#If stanford NER tokenizer breaks and puts ',' with NE, then remove the ending comma or period
 		if topobase[-1] == ',':
 			topobase = topobase[:-1]
@@ -419,7 +419,7 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 			topotokens.append(topobase.replace(" ", '|'))
 			#contextlist.append(topobase.replace(" ", '|'))
 			contextlist.append([topobase.replace(" ", '|'), "MainTopo", 0])
-		
+
 		totaldict = Counter()
 		contrib_dict = {}
 
@@ -427,8 +427,8 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 
 		wordlist = []
 
-		gold_lat = float(toporef[j][1]['lat'])
-		gold_long = float(toporef[j][1]['long'])
+		# gold_lat = float(toporef[j][1]['lat'])
+		# gold_long = float(toporef[j][1]['long'])
 
 		for word in contextlist:
 			if word[0] not in stopwords:
@@ -465,7 +465,7 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 		rank_dict = {}
 		#ranked_contrib = sorted(contrib_dict.items(), key=itemgetter(1), reverse=True)
 		for t in sorted_total:
-			y += 1 
+			y += 1
 			#contrib_sub = sorted(contrib_dict[t[0]], key=itemgetter(1), reverse=True)
 			rank_dict[t[0]] = [y, t[1], lat_long_lookup[t[0]]]
 
@@ -494,7 +494,7 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 						centroid_lat = gazet_entry[0][3]
 						centroid_long = gazet_entry[0][4]
 						predictions.append([toporef[j], plaintext_file, j, "GAZET", tbl, gid, name, centroid_lat, centroid_long ] )
-					else: 
+					else:
 						print "@!@!@!@!@ More than one match found in gazet, error in gazet resolve logic @!@!@!@!@"
 						#print gazet_entry
 				else:
@@ -570,7 +570,7 @@ def GetGazets(cur, placenames, latlong, country_tbl, region_tbl, state_tbl, geon
 		gazet_entry.append([geonames_tbl, row[0], row[1], float(row[2])/1000.0])
 		#print "!!!Found Gazet Match!!!"
 		#print gazet_entry[-1]
-	
+
 	if len(gazet_entry) >= 1:
 		ranked_gazet = sorted(gazet_entry, key=itemgetter(3), reverse=False)
 		SQL_Centroid = "SELECT p5.gid, ST_Y(ST_Centroid(p5.geog::geometry)), ST_X(ST_Centroid(p5.geog::geometry)) FROM %s as p5 WHERE p5.gid = %s;" % (ranked_gazet[0][0] ,'%s')
