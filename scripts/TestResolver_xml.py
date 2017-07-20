@@ -19,7 +19,11 @@ import collections
 import UnicodeBlocks
 import re
 
+from Params import *
+
 #For use with Tr-ConLL format xml
+
+
 
 def parse_xml(afile):
 	#print afile
@@ -252,7 +256,7 @@ def calc(in_domain_stat_tbl, out_domain_stat_tbl, test_xml, conn_info, gtbl, win
 			predictions, total_topo, point_error_sum, poly_error_sum, point_dist_list, poly_dist_list, point_total_correct, poly_total_correct = VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup,  
 				percentile, window, stopwords, main_topo_weight, other_topo_weight, other_word_weight, xml_file, predictions, country_tbl, region_tbl, state_tbl,
 				 geonames_tbl, cntry_alt, region_alt, state_alt, pplc_alt, in_domain_stat_tbl, in_corp_lamb, out_corp_lamb, point_error_sum, poly_error_sum, point_dist_list, poly_dist_list, point_total_correct, poly_total_correct)
-			print "Polygon Accuracy @ 161km : ", float(poly_total_correct) / float(total_topo)
+			print "Polygon Accuracy @", ACC_CRITERIA, ": ", float(poly_total_correct) / float(total_topo)
 		with io.open(results_file, 'w', encoding='utf-8') as w:
 			w.write(u"NER_Toponym,Source_File,Token_index,GeoRefSource,Table,gid,Table_Toponym,Centroid_Lat,Centroid_Long,pointdist_err,polydist_err,point_cor,poly_cor,gold_lat,gold_long\r\n")
 			for p in predictions:
@@ -277,10 +281,10 @@ def calc(in_domain_stat_tbl, out_domain_stat_tbl, test_xml, conn_info, gtbl, win
 		print "Other word weight:", other_word_weight
 		print "Point Average Error Distance @ 1: ", ((float(point_error_sum)/float(total_topo)))
 		print "Point Median Error Distance @ 1: ", point_dist_list[total_topo/2]
-		print "Point Accuracy @ 161km : ", float(point_total_correct) / float(total_topo)
+		print "Point Accuracy @", ACC_CRITERIA, ": ", float(point_total_correct) / float(total_topo)
 		print "Polygon Average Error Distance @ 1: ", ((float(poly_error_sum)/float(total_topo)))
 		print "Polygon Median Error Distance @ 1: ", poly_dist_list[total_topo/2]
-		print "Polygon Accuracy @ 161km : ", float(poly_total_correct) / float(total_topo)
+		print "Polygon Accuracy @", ACC_CRITERIA, ": ", float(poly_total_correct) / float(total_topo)
 
 	end_time = datetime.datetime.now()
 
@@ -509,10 +513,10 @@ def VectorSum(wordref, toporef, total_topo, cur, lat_long_lookup, percentile, wi
 				point_cor = "0"
 				poly_cor = "0"
 
-				if pointdist <= 161.0:
+				if pointdist <= ACC_THERSHOLD:
 					point_total_correct += 1
 					point_cor = "1"
-				if polydist <= 161.0:
+				if polydist <= ACC_THERSHOLD:
 					poly_total_correct += 1
 					poly_cor = "1"
 
